@@ -1,5 +1,17 @@
 <?php session_start(); 
 if(isset($_SESSION['table'])) $table = $_SESSION['table'];
+function readTable(){
+    $table = $_SESSION['table'];
+    $O = 0;
+    foreach ($table as $x => $v) {
+        echo 'à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient "' . $v . '"</br>';
+        $O++;
+    }
+}  
+function getCiv($civility){
+    $civ = ($civility == "Homme") ? "Mr" :  "Mme";
+    return $civ;
+}
 ?>
 
 <!DOCTYPE html>
@@ -18,18 +30,32 @@ if(isset($_SESSION['table'])) $table = $_SESSION['table'];
             <a class="btn btn-outline-secondary w-100" role="button" href="index.php">Home</a>
             <?php if (isset($table)) include_once './includes/ul.inc.php'; ?>    
             </nav>
-  
+           
+            <section class="col-md-9 mt-3">
 
-            <section class="col-md-9 mt-3">         
             <?php if(isset($_GET['add'])) {
                         include './includes/form.inc.html';
                     } 
+                    elseif(isset($_GET['addmore'])) {
+                        include './includes/form2.inc.php';
+                    } 
+
                     elseif(isset($_POST['save'])) {
                         $prenom = $_POST['prénom'];
                         $nom = $_POST['nom'];
                         $age = $_POST['age'];
                         $taille = $_POST['taille'];
                         $sex = $_POST['sex'];
+                        $html = $_POST['html'];
+                        $css = $_POST['css'];
+                        $js = $_POST['javascript'];
+                        $php = $_POST['php'];
+                        $mysql = $_POST['mysql'];
+                        $bootstrap = $_POST['bootstrap'];
+                        $symfony = $_POST['symfony'];
+                        $react = $_POST['react'];
+                        $color = $_POST['color'];
+                        $date = $_POST['birthday'];
                         $table = array(          
                             "first_name" => $prenom,
                             "last_name"  =>  $nom,
@@ -54,21 +80,18 @@ if(isset($_SESSION['table'])) $table = $_SESSION['table'];
                                 echo '<h3 class="text-start mt-5 fs-6"> ===> Construction d\'une phrase avec le contenu du tableau </h3>';                               
                                 $table['first_name'] = ucfirst ($table['first_name']);
                                 $table['last_name'] = ucfirst  ($table['last_name']);
-                                $civ = ($table['civility'] == "Homme") ? "Mr" :  "Mme";
-                                echo '<p>'. $civ .' '. $table['first_name'] . ' ' . $table['last_name'] .'<br> j`ai '.  $table["age"] .' ans et je mesure '. $table['size'] . 'm. </p>' ;
+                                echo '<p>'. getCiv($civility) .' '. $table['first_name'] . ' ' . $table['last_name'] .'<br> j`ai '.  $table["age"] .' ans et je mesure '. $table['size'] . 'm. </p>' ;
 
                                 echo "<h3 class='mt-5 fs-6'>===> Construction d'une phrase après MAJ du tableau :</h3>";                              
                                 $table['first_name'] = ucfirst ($table['first_name']);
                                 $table['last_name'] = strtoupper($table['last_name']);
-                                $civ = ($table['civility'] == "Homme") ? "Mr" :  "Mme";
-                                echo '<p>' . $civ . ' ' . $table['first_name'] . ' ' . $table['last_name'] . '<br> j`ai ' .  $table["age"] . ' ans et je mesure ' . $table['size'] . 'm. </p>';
+                                echo '<p>' . getCiv($civility) . ' ' . $table['first_name'] . ' ' . $table['last_name'] . '<br> j`ai ' .  $table['age'] . ' ans et je mesure ' . $table['size'] . 'm. </p>';
 
                                 echo "<h3 class='mt-5 fs-6'>===> Affichage d'une virgule à la place du point pour la taille </h3>";                              
                                 $table['size'] = str_replace('.' , ',', $table['size']);
                                 $table['first_name'] = ucfirst ($table['first_name']);
                                 $table['last_name'] = strtoupper($table['last_name']);
-                                $civ = ($table['civility'] == "Homme") ? "Mr" :  "Mme";
-                                echo '<p>' . $civ . ' ' . $table['first_name'] . ' ' . $table['last_name'] . '<br> j`ai ' . $age . ' ans et je mesure ' . $table['size'] . 'm. </p>';
+                                echo '<p>' . getCiv($civility) . ' ' . $table['first_name'] . ' ' . $table['last_name'] . '<br> j`ai ' . $table['age'] . ' ans et je mesure ' . $table['size'] . 'm. </p>';
 
                             }
                             else if (isset($_GET['loop'])) {
@@ -86,14 +109,6 @@ if(isset($_SESSION['table'])) $table = $_SESSION['table'];
 
                                 echo '<h2 class="text-center">Fonction</h2>';
                                 echo '<h3 class="mt-5 fs-6">===> J\'utilise ma fonction readTable()</h3>';
-                                function readTable(){
-                                    $table = $_SESSION['table'];
-                                    $O = 0;
-                                    foreach ($table as $x => $v) {
-                                        echo 'à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient "' . $v . '"</br>';
-                                        $O++;
-                                    }
-                                }  
                                 readTable();
                             }  
                             elseif (isset($_GET['del'])) {
@@ -104,17 +119,19 @@ if(isset($_SESSION['table'])) $table = $_SESSION['table'];
                             
                             }else { 
                                 echo '<a role="button" class=" btn btn-primary" href="index.php?add">Ajouter des données</a>'; 
+                                echo '<a role="button" class=" btn btn-secondary" href="index.php?addmore">Ajouter plus de données</a>';
                             }  
                         }
                         else { 
-                            echo '<a role="button" class=" btn btn-primary" href="index.php?add">Ajouter des données</a>'; 
+                            echo '<a role="button" class=" btn btn-primary" href="index.php?add">Ajouter des données</a>';
+                            echo '<a role="button" class=" btn btn-secondary" href="index.php?addmore">Ajouter plus de données</a>'; 
                         } 
                     }   
                 
             ?>
             
-
             </section>
+        
         </div>   
     </div>
          
