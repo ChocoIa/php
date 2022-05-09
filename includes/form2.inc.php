@@ -1,5 +1,5 @@
 <h1 class="text-center">Ajouter plus de données</h1>
-<form  action="index.php" method="POST">
+<form  action="index.php" method="POST" enctype="multipart/form-data">
 <div class="row">
 <div class="card col-md-7 mx-auto my-1">
 <div class="form-group">
@@ -100,7 +100,8 @@
 <div class="card col-11 mx-auto my-1">
     <div class="form-group">
       <label for="formFile" class="form-label mt-4"><p>joindre une image(jpg ou png)</p></label>
-      <input class="form-control" type="file" name="img" id="img">
+      <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+      <input class="form-control" type="file" name="image" id="image">
     </div>
 </div>
 <div class="d-flex flex-row-reverse bd-highlight mt-4">

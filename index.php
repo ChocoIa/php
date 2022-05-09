@@ -4,8 +4,14 @@ function readTable(){
     $table = $_SESSION['table'];
     $O = 0;
     foreach ($table as $x => $v) {
-        echo 'à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient "' . $v . '"</br>';
+        if ($x == 'img') {
+            unset($v);
+            echo '<div>à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient</div>';
+            echo "<img class='w-100' src='./uploaded/".$table['img']['name']."'>"; 
+        }
+        else { echo 'à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient "' . $v . '"</br>';
         $O++;
+    }
     }
 }  
 function getCiv($civility){
@@ -56,16 +62,69 @@ function getCiv($civility){
                         $react = $_POST['react'];
                         $color = $_POST['color'];
                         $date = $_POST['birthday'];
-                        $table = array(          
+                        $fileName=$_FILES['image']['name'];
+                        $fileTmpName=$_FILES['image']['tmp_name'];
+                        $fileSize=$_FILES['image']['size'];
+                        $fileError=$_FILES['image']['error'];
+                        $fileType=$_FILES['image']['type'];
+                        $extensions = ['jpg', 'png', 'jpeg', 'gif'];
+                        $tableComp= array(          
                             "first_name" => $prenom,
                             "last_name"  =>  $nom,
                             "age" => $age,
                             "size" => $taille,
                             "civility" => $sex,
+                            "html" => $html,
+                            "css" => $css,
+                            "javascript" => $js,
+                            "php" => $php,
+                            "mysql" => $mysql,
+                            "bootstrap" => $bootstrap,
+                            "symfony" => $symfony,
+                            "react" => $react,
+                            "color" => $color,
+                            "birthday" => $date,
+                            "img" => $img = array (
+                                "name" => $fileName,
+                                "tmp_name" => $fileTmpName,
+                                "size" => $fileSize,
+                                "error" => $fileError,
+                                "type" => $fileType
+                            )
                         );
+                        $table = array_filter($tableComp);
                         $_SESSION['table'] = $table;
-                        echo '<p class="alert-success text-center py-3"> Données sauvegardées</p>';
+                        if (empty($_FILES['image'])) {
+                            unset ($_SESSION['table']['img']);
+                            echo '<p class="alert-success text-center py-3"> Données sauvegardées</p>';
                     } 
+                    else {
+                        move_uploaded_file($fileTmpName, './uploaded/' . $fileName);
+                        $tabExtension = explode('.', $fileName);
+                        $extension = strtolower(end($tabExtension));
+                        $extensionsAutorisees = ['jpg', 'png', 'jpeg'];
+
+                        if ( $fileError == 4) {
+                            echo '<p class="alert-danger text-center pb-3 pt-4">Aucun fichier n\'a été téléchargé</p>';
+                            unset($_SESSION['table']);
+                        } elseif(in_array($extension,$extensionsAutorisees) === false) {
+                            echo '<p class="alert-danger text-center pb-3 pt-4">Extension "' .$extension . '" non prise en charge';
+                            unset($_SESSION['table']);
+                        } elseif($fileError == 2) {
+                            echo '<p class="alert-danger text-center pb-3 pt-4">La taille de l\'image doit être inférieure à 2Mo</p>';
+                            unset($_SESSION['table']);
+                        } elseif( $fileError == 1 ||  $fileError == 3 || $fileError > 4) {
+                            echo '<p class="alert-danger text-center pb-3 pt-4">error: '. $fileError.'</p>';
+                            unset($_SESSION['table']);
+                        }elseif ( $fileError == 0) {
+                            $table = array_filter($tableComp);
+                            $_SESSION['table'] = $table;
+                            echo '<p class="alert-success text-center py-3"> Données sauvegardées</p>';   
+                        }
+                    }
+                }
+                    
+                
                     else {
                         if (isset($table)) {
                             if(isset($_GET['debugging'])) {
@@ -101,8 +160,14 @@ function getCiv($civility){
                                 $table = $_SESSION['table'];
                                 $O = 0;
                                 foreach ($table as $x => $v) {
-                                    echo 'à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient "' . $v . '"</br>';
+                                    if ($x == 'img') {
+                                        unset($v);
+                                        echo '<div>à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient</div>';
+                                        echo "<img class='w-100' src='./uploaded/".$table['img']['name']."'>"; 
+                                    }
+                                    else { echo 'à la ligne n°' . $O . ' correspond la clé "' . $x . '" et contient "' . $v . '"</br>';
                                     $O++;
+                                }
                                 }
                             }
                             else if (isset($_GET['function'])){     
@@ -113,6 +178,8 @@ function getCiv($civility){
                             }  
                             elseif (isset($_GET['del'])) {
                                 unset ($_SESSION['table']);
+                                $supprImg = "./uploaded/".$table['img']['name'];
+                                unlink($supprImg);
                                 if (empty($_SESSION['table'])) {
                                     echo '<p class="alert-success text-center py-3"> Données suprimées</p>';
                                 }
